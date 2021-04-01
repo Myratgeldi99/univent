@@ -11,7 +11,12 @@ export const NavbarElements = [
     },
     {
         title: 'Events',
-        url: '/Events',
+        url: '/EventsList',
+        cName: 'nav-links'
+    },
+    {
+        title: 'Create event',
+        url: '/CreateEvent',
         cName: 'nav-links'
     },
     {

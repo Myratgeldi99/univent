@@ -5,9 +5,9 @@ import Profile from './components/Profile';
 import './App.css';
 import Navbar from './components/Navbar/Navbar';
 import About from './components/About';
-import Signup from './components/signup';
-import Event from './components/Events';
-import CreateEvent from './components/CreateEvent';
+import EventsList from './components/Event/EventsList';
+import CreateEvent from "./components/CreateArea";
+import Signup from './components/Registration';
 
 class App extends Component {
   render(){  
@@ -17,8 +17,8 @@ class App extends Component {
           <Navbar />
           <Switch>
             <Route path="/About" exact component={About} />
-            <Route path="/signup" exact component={Signup} />
-            <Route path="/Events" exact component={Event} />
+            <Route path="/Signup" exact component={Signup} />
+            <Route path="/EventsList" exact component={EventsList} />
             <Route path="/CreateEvent" exact component={CreateEvent} />
             <PrivateRoute path="/Profile" exact component={Profile}/>
           </Switch>  
