@@ -1,15 +1,18 @@
-import React, { useState , useContext } from "react";
-import { BoldLink, BoxContainer, FieldContainer, FieldError, FormContainer, Input, MutedLink, SubmitButton } from "./common";
+import React, { useState, useContext } from "react";
+import { BoldLink, BoxContainer, FieldContainer, FieldError, FormContainer, FormError, Input, MutedLink, SubmitButton } from "./common";
 import { Marginer } from "../marginer";
 import { AccountContext } from "./accountContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import authService from "../../services/authService";
 
 const passwordReg = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 const emailReg = /^([a-zA-Z0-9_\-.]+)@link.cuhk.edu.hk$/;
 
 const validationSchema = yup.object({
-    fullName: yup.string().min(3, "Please enter valid name").required("Full name is required"),
+    name: yup.string().min(3, "Please enter valid name").required("Full name is required"),
     email: yup.string().matches(emailReg, "Please enter a valid email address").required(),
     password: yup.string().matches(passwordReg, "Password is weak").required(),
     confirmPassword: yup.string().required("Please confirm your password").when("password", {
@@ -20,12 +23,30 @@ const validationSchema = yup.object({
 
 export function Signup(props) {
     const { switchToSignin } = useContext(AccountContext);
+    const [success, setSuccess] = useState(null);
+    const [error, setError] = useState(null);
+    let history = useHistory();
 
     const onSubmit = async (values) => {
-        alert(JSON.stringify(values))
-    }
+        const { confirmPassword, ...data } = values;
 
-    const formik = useFormik({ initialValues: { fullName: "", email:"", password:"", confirmPassword:"" },
+        const response = await axios
+        authService.register(values.name, values.email, values.password, values.confirmPassword)
+            .catch((err) => {
+                if (err && err.response) setError(err.response.data.message);
+                setSuccess(null);
+            });
+
+        if (response && response.data) {
+            setError(null);
+            setSuccess(response.data.message);
+            history.push("/");
+            window.location.reload();
+        }
+    };
+
+    const formik = useFormik({
+        initialValues: { name: "", email: "", password: "", confirmPassword: "" },
         validateOnBlur: true,
         onSubmit,
         validationSchema: validationSchema,
@@ -33,12 +54,13 @@ export function Signup(props) {
 
     console.log("Error: ", formik.errors);
 
-    return(
+    return (
         <BoxContainer>
+            {!success && <FormError>{error ? error : ""}</FormError>}
             <FormContainer onSubmit={formik.handleSubmit}>
                 <FieldContainer>
-                    <Input name="fullName" type="text" placeholder="Full Name" value={formik.values.fullName} onChange={formik.handleChange} onBlur={formik.handleBlur} />
-                    <FieldError>{formik.touched.fullName && formik.errors.fullName ? formik.errors.fullName : ""}</FieldError>
+                    <Input name="name" type="text" placeholder="Full Name" value={formik.values.name} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                    <FieldError>{formik.touched.name && formik.errors.name ? formik.errors.name : ""}</FieldError>
                 </FieldContainer>
                 <Marginer direction="vertical" margin={5} />
                 <FieldContainer>
@@ -56,13 +78,13 @@ export function Signup(props) {
                     <FieldError>{formik.touched.confirmPassword && formik.errors.confirmPassword ? formik.errors.confirmPassword : ""}</FieldError>
                 </FieldContainer>
                 <Marginer direction="vertical" margin={10} />
-                <SubmitButton type="submit">Signup</SubmitButton>
+                <SubmitButton type="submit" disabled={!formik.isValid}>Signup</SubmitButton>
             </FormContainer>
             <Marginer direction="vertical" margin={10} />
-            <MutedLink href="#">Already have an accaunt?  
+            <MutedLink href="#">Already have an accaunt?
                 <BoldLink onClick={switchToSignin}> Sign in</BoldLink>
             </MutedLink>
-            
+
         </BoxContainer>
     );
 }

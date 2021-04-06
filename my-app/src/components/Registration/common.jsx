@@ -81,3 +81,10 @@ export const FieldError = styled.span`
     font-size: 11px;
     min-height: 18px;
 `;
+
+export const FormError = styled.span`
+    color: #b32e2e;
+    font-size: 12px;
+    min-height: 20px;
+    font-weight: 600;
+`;

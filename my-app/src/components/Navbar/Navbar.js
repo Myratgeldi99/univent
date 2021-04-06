@@ -1,16 +1,43 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
-import {NavbarElements} from './NavbarElements';
 import './Navbar.css'
-import { Button } from './Button';
+import AuthService from "../../services/authService";
 
 class Navbar extends Component {
+  constructor(props) {
+    super(props);
+    this.logOut = this.logOut.bind(this);
+
+    this.state = {
+      currentUser: undefined,
+    };
+  }
+
+  componentDidMount() {
+    const user = AuthService.getCurrentUser();
+
+    if(user) {
+      this.setState({
+        currentUser: user
+      });
+    }
+  }
+
+  logOut() {
+    if(window.confirm("You will be logged out")){
+      AuthService.logout();
+      window.location.reload();
+    }
+  }
+
   state = { clicked: false }
   handleClick = () => {
     this.setState({ clicked: !this.state.clicked })
   }
 
   render(){
+    const { currentUser } = this.state;
+    
     return (
       <nav className="NavbarItems">
         <Link to="/" className='navbar-logo'>
@@ -20,17 +47,42 @@ class Navbar extends Component {
           <i className={this.state.clicked ? 'fas fa-times' : 'fas fa-bars'}></i>
         </div>
         <ul className={this.state.clicked ? 'nav-menu active' : 'nav-menu'}>
-          {NavbarElements.map((item, index) => {
-            return (
-              <li key={index}>
-                <a className={item.cName} href={item.url}>
-                  {item.title}
-                </a>
-              </li>
-            )
-          })}
+          <li>
+            <a className="nav-links" href="/About">
+              About
+            </a>
+          </li>
+          <li>
+            <a className="nav-links" href="/Profile">
+              Profile
+            </a>
+          </li>
+          <li>
+            <a className="nav-links" href="/EventsList">
+              Events
+            </a>
+          </li>
+          <li>
+            <a className="nav-links" href="/CreateEvent">
+              Create event
+            </a>
+          </li>
+          <li>
+            {currentUser? (
+              <a className="nav-links-mobile" href="/" onClick={this.logOut}>Log Out</a>
+            ) : (
+              <a className="nav-links-mobile" href="/Signup">Sign in</a>
+            )}
+          </li>
         </ul>
-        <Button>Sign up</Button>
+        {currentUser ? (
+          <Link to="/">
+            <button className="btn" onClick={this.logOut}>Log Out</button>
+          </Link>) : 
+          (<Link to="/Signup">
+            <button className="btn">Sign in</button>
+          </Link>
+        )}
       </nav>
     );
   }

@@ -1,9 +1,12 @@
-import { React, useContext } from "react";
-import { BoldLink, BoxContainer, FieldContainer, FieldError, FormContainer, Input, MutedLink, SubmitButton } from "./common";
+import { React, useContext, useState } from "react";
+import { BoldLink, BoxContainer, FieldContainer, FieldError, FormContainer, FormError, Input, MutedLink, SubmitButton } from "./common";
 import { Marginer } from "../marginer";
 import { AccountContext } from "./accountContext";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import axios from "axios";
+import { useHistory } from "react-router-dom";
+import authService from "../../services/authService";
 
 const validationSchema = yup.object({
     email: yup.string().required(),
@@ -12,12 +15,24 @@ const validationSchema = yup.object({
 
 export function Login(props) {
     const { switchToSignup } = useContext(AccountContext);
+    const [error, setError] = useState(null);
+    let history = useHistory();
 
     const onSubmit = async (values) => {
-        alert(JSON.stringify(values))
-    }
+        setError(null);
+        const response = await axios
+        authService.login(values.email, values.password)
+            .then(() => {
+                history.push("/");
+                window.location.reload();
+            },
+                err => {
+                    if (err && err.response) setError(err.response.data.message);
+                });
+    };
 
-    const formik = useFormik({ initialValues: { email:"", password:"" },
+    const formik = useFormik({
+        initialValues: { email: "", password: "" },
         validateOnBlur: true,
         onSubmit,
         validationSchema: validationSchema,
@@ -25,8 +40,9 @@ export function Login(props) {
 
     console.log("Error: ", formik.errors);
 
-    return(
+    return (
         <BoxContainer>
+            <FormError>{error ? error : ""}</FormError>
             <FormContainer onSubmit={formik.handleSubmit}>
                 <FieldContainer>
                     <Input name="email" type="email" placeholder="Email" value={formik.values.email} onChange={formik.handleChange} onBlur={formik.handleBlur} />
@@ -40,9 +56,9 @@ export function Login(props) {
                 <Marginer direction="vertical" margin={10} />
                 <MutedLink href="#">Forget your password</MutedLink>
                 <Marginer direction="vertical" margin={10} />
-                <SubmitButton type="submit">Sign in</SubmitButton>
+                <SubmitButton type="submit" disabled={!formik.isValid}>Sign in</SubmitButton>
                 <Marginer direction="vertical" margin={75} />
-                <MutedLink href="#">Don't have an accaunt?  
+                <MutedLink href="#">Don't have an accaunt?
                     <BoldLink onClick={switchToSignup}> Sign up</BoldLink>
                 </MutedLink>
             </FormContainer>
