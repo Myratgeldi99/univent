@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   font-size: 1.2rem;
+  line-height: 0;
 }
 
 .navbar-logo {
@@ -12,6 +13,11 @@
   justify-self: start;
   margin-left: 20px;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.navbar-logo:hover {
+  color: #fff;
   text-decoration: none;
 }
 
@@ -24,6 +30,7 @@
   width: 70vw;
   justify-content: end;
   margin-right: 2rem;
+  margin-top: 12px;
 }
 
 .nav-links {
@@ -36,6 +43,7 @@
 .nav-links:hover {
   color: #1888ff;
   transition: all 0.2s ease-out;
+  text-decoration: none;
 }
 
 .fa-bars {
@@ -50,7 +58,7 @@
   display: none;
 }
 
-.btn {
+#button {
   padding: 8px 20px;
   border-radius: 4px;
   outline: none;
@@ -61,7 +69,7 @@
   font-size: 1rem;
 }
 
-.btn:hover {
+#button:hover {
   padding: 8px 20px;
   transition: all 0.3s ease-out;
   background: #fff;
@@ -69,7 +77,7 @@
   transition: 250ms;
 }
 
-.btn--outline {
+#button--outline {
   background-color: transparent;
   color: #fff;
   padding: 8px 20px;
@@ -101,7 +109,7 @@
     left: 0;
     opacity: 1;
     transition: all 0.5s ease;
-    z-index: 2;
+    z-index: 17;
   }
 
   .nav-links {
@@ -145,6 +153,7 @@
     color: white;
     font-size: 1.5rem;
     background: #1888ff;
+    z-index: 2;
   }
 
   .nav-links-mobile:hover {
@@ -153,7 +162,7 @@
     transition: 250ms;
   }
 
-  button {
+  #button {
     display: none;
   }
 }

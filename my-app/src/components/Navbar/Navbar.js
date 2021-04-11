@@ -39,8 +39,8 @@ class Navbar extends Component {
     const { currentUser } = this.state;
     
     return (
-      <nav className="NavbarItems">
-        <Link to="/" className='navbar-logo'>
+      <nav className="NavbarItems" id="NavbarItems">
+        <Link to="/" className='navbar-logo' id='navbar-logo'>
           <h1>Univent</h1>
         </Link>
         <div className='menu-icon' onClick={this.handleClick}>
@@ -77,10 +77,10 @@ class Navbar extends Component {
         </ul>
         {currentUser ? (
           <Link to="/">
-            <button className="btn" onClick={this.logOut}>Log Out</button>
+            <button className="btn" id="button" onClick={this.logOut}>Log Out</button>
           </Link>) : 
           (<Link to="/Signup">
-            <button className="btn">Sign in</button>
+            <button className="btn" id="button">Sign in</button>
           </Link>
         )}
       </nav>
