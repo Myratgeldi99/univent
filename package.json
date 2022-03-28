@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "query-string": "^7.0.0",
+    "react-window": "^1.8.6"
+  }
+}
